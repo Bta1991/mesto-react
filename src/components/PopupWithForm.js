@@ -1,4 +1,4 @@
-function PopupWithForm({ name, title }) {
+function PopupWithForm({ name, title, children, buttonText }) {
     return (
         <div className={`popup popup_${name}`}>
             <div className="popup__container">
@@ -10,7 +10,7 @@ function PopupWithForm({ name, title }) {
                         className="popup__save popup__save_disabled"
                         aria-label="Сохранить"
                     >
-                        Сохранить
+                       { buttonText || 'Сохранить' }
                     </button>
                 </form>
                 <button
