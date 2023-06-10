@@ -1,17 +1,15 @@
 import React from 'react'
 import PopupWithForm from './PopupWithForm'
 
-function PopupDelete() {
+function PopupDelete({isOpen, onClose}) {
     return (
         <PopupWithForm
             name={'deleteForm'}
             title={'Вы уверены?'}
-            // isOpen={isOpen}
-            // onClose={onClose}
+            isOpen={isOpen}
+            onClose={onClose}
             // onSubmit={handleSubmit}
-        >
-          ????
-        </PopupWithForm>
+        ></PopupWithForm>
     )
 }
 export default PopupDelete

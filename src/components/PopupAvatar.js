@@ -1,13 +1,13 @@
 import React from 'react'
 import PopupWithForm from './PopupWithForm'
 
-function PopupAvatar() {
+function PopupAvatar({isOpen, onClose}) {
     return (
         <PopupWithForm
             name={'avatarForm'}
             title={'Обновить аватар'}
-            // isOpen={isOpen}
-            // onClose={onClose}
+            isOpen={isOpen}
+            onClose={onClose}
             // onSubmit={handleSubmit}
         >
             <input

@@ -1,18 +1,8 @@
-function Main() {
-    const handleEditAvatarClick = () => {
-        const avatarEditPopup = document.querySelector('.popup_avatarForm')
-        avatarEditPopup.classList.add('popup_opened')
-    }
+import CurrentUserContext from '../contexts/CurrentUserContext'
+import React from 'react'
 
-    const handleEditProfileClick = () => {
-        const profileEditPopup = document.querySelector('.popup_editForm')
-        profileEditPopup.classList.add('popup_opened')
-    }
-
-    const handleAddPlaceClick = () => {
-        const addPlacePopup = document.querySelector('.popup_addForm')
-        addPlacePopup.classList.add('popup_opened')
-    }
+function Main({ onEditAvatar, onEditProfile, onAddPlace, cards }) {
+    const currentUser = React.useContext(CurrentUserContext)
 
     return (
         <main className="main">
@@ -20,39 +10,42 @@ function Main() {
                 <div className="profile__avatar-area">
                     <img
                         className="profile__avatar"
-                        src="#"
+                        src={currentUser.avatar}
                         alt="Фото пользователя"
                     />
                     <button
                         type="button"
                         className="profile__avatar-edit"
                         aria-label="Редактировать аватар профиля"
-                        onClick={handleEditAvatarClick}
+                        onClick={onEditAvatar}
                     ></button>
                 </div>
                 <div className="profile__info">
                     <div className="profile__title">
-                        <h1 className="profile__name"></h1>
+                        <h1 className="profile__name">{currentUser.name}</h1>
                         <button
                             type="button"
                             className="profile__edit"
                             aria-label="Редактировать профиль"
-                            onClick={handleEditProfileClick}
+                            onClick={onEditProfile}
                         ></button>
                     </div>
 
-                    <p className="profile__subtitle"></p>
+                    <p className="profile__subtitle">{currentUser.about}</p>
                 </div>
 
                 <button
                     type="button"
                     className="profile__add-button"
                     aria-label="Добавить фото"
-                    onClick={handleAddPlaceClick}
+                    onClick={onAddPlace}
                 ></button>
             </section>
             <section className="elements">
-                <template id="card">
+            <template id="card">
+              {cards}
+            </template>
+                {/* <template id="card">
                     <article className="element">
                         <div className="element__container">
                             <img className="element__photo" alt="#" />
@@ -74,7 +67,7 @@ function Main() {
                             </div>
                         </div>
                     </article>
-                </template>
+                </template> */}
             </section>
         </main>
     )
