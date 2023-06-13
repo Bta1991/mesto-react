@@ -1,9 +1,20 @@
-import CurrentUserContext from '../contexts/CurrentUserContext'
-import React from 'react'
+import React, { useContext } from 'react'
 import Card from './Card'
+import CurrentUserContext from '../contexts/CurrentUserContext'
 
 function Main({ onEditAvatar, onEditProfile, onAddPlace, cards, onCardClick }) {
-    const currentUser = React.useContext(CurrentUserContext)
+    const currentUser = useContext(CurrentUserContext)
+
+    // Check if `cards` is null or undefined
+    if (!cards) {
+        return null
+    }
+
+    const renderCards = () => {
+        return cards.map((item) => (
+            <Card key={item._id} card={item} onClick={onCardClick} />
+        ))
+    }
 
     return (
         <main className="main">
@@ -31,10 +42,8 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, cards, onCardClick }) {
                             onClick={onEditProfile}
                         ></button>
                     </div>
-
                     <p className="profile__subtitle">{currentUser.about}</p>
                 </div>
-
                 <button
                     type="button"
                     className="profile__add-button"
@@ -42,11 +51,7 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, cards, onCardClick }) {
                     onClick={onAddPlace}
                 ></button>
             </section>
-            <section className="elements">
-                {cards.map((item) => (
-                    <Card key={item._id} card={item} onClick={onCardClick} />
-                ))}
-            </section>
+            <section className="elements">{renderCards()}</section>
         </main>
     )
 }

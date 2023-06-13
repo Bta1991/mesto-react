@@ -25,9 +25,7 @@ function App() {
         setIsEditAvatarPopupOpen(true)
     }
     const handleCardClick = (card) => {
-        if (card !== selectedCard) {
-            setSelectedCard(card)
-        }
+        setSelectedCard(card)
     }
     useEffect(() => {
         const fetchData = async () => {
@@ -76,9 +74,7 @@ function App() {
                     onClose={closeAllPopups}
                 />
 
-                {selectedCard && (
-                    <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-                )}
+                <ImagePopup card={selectedCard} onClose={closeAllPopups} />
             </div>
         </CurrentUserContext.Provider>
     )
