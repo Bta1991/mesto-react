@@ -1,23 +1,20 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Header from './Header'
 import Main from './Main'
 import Footer from './Footer'
-
 import PopupAvatar from './PopupAvatar'
 import PopupProfile from './PopupProfile'
 import PopupAdd from './PopupAdd'
-
+import PopupImage from './PopupImage'
 import CurrentUserContext from '../contexts/CurrentUserContext'
 import api from '../utils/Api'
-
 function App() {
-    const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
-        React.useState(false)
-    const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false)
-    const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
-        React.useState(false)
-    const [currentUser, setCurrentUser] = React.useState({})
-    const [cards, setCards] = React.useState([])
+    const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false)
+    const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false)
+    const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false)
+    const [currentUser, setCurrentUser] = useState({})
+    const [cards, setCards] = useState([])
+    const [selectedCard, setSelectedCard] = useState(null)
     const handleEditProfileClick = () => {
         setIsEditProfilePopupOpen(true)
     }
@@ -27,88 +24,56 @@ function App() {
     const handleEditAvatarClick = () => {
         setIsEditAvatarPopupOpen(true)
     }
-
-    React.useEffect(() => {
-        Promise.all([api.getUserInfo(), api.getInitialsCards()])
-            .then(([data, item]) => {
-                setCurrentUser(data)
-                setCards(item)
-                // userID = data._id
-                // userInfo.setUserInfo(data.name, data.about)
-                // userInfo.setUserAvatar(data.avatar)
-                // section.renderItems(item)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+    const handleCardClick = (card) => {
+        if (card !== selectedCard) {
+            setSelectedCard(card)
+        }
+    }
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [userData, cardsData] = await Promise.all([
+                    api.getUserInfo(),
+                    api.getInitialsCards(),
+                ])
+                setCurrentUser(userData)
+                setCards(cardsData)
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        fetchData()
     }, [])
-
-    function closeAllPopups() {
+    const closeAllPopups = () => {
         setIsEditProfilePopupOpen(false)
         setIsAddPlacePopupOpen(false)
         setIsEditAvatarPopupOpen(false)
-        // setSelectedCard(null)
+        setSelectedCard(null)
     }
-
     return (
         <CurrentUserContext.Provider value={currentUser}>
             <div className="page">
                 <Header />
-
                 <Main
                     onEditProfile={handleEditProfileClick}
                     onAddPlace={handleAddPlaceClick}
                     onEditAvatar={handleEditAvatarClick}
-                    cards={cards.map((item) => (
-                        <article className="element" key={item._id}>
-                            <div className="element__container">
-                                <img
-                                    className="element__photo"
-                                    alt="#"
-                                    src={item.link}
-                                    // style={{
-                                    //     backgroundImage: `url(${item.link})`,
-                                    // }}
-                                />
-                                <button
-                                    type="button"
-                                    className="element__trash"
-                                    aria-label="Удалить фото"
-                                />
-                            </div>
-                            <div className="element__info">
-                                <h2 className="element__text">{item.name}</h2>
-                                <div className="element__like-area">
-                                    <button
-                                        type="button"
-                                        className="element__like"
-                                        aria-label="Лайкнуть фото"
-                                    />
-                                    <p className="element__like-counter">
-                                        {item.likes.length}
-                                    </p>
-                                </div>
-                            </div>
-                        </article>
-                    ))}
+                    cards={cards}
+                    onCardClick={handleCardClick}
                 />
                 <Footer />
-
-                <PopupAvatar
-                    isOpen={isEditAvatarPopupOpen}
-                    onClose={closeAllPopups}
-                />
-                <PopupProfile
-                    isOpen={isEditProfilePopupOpen}
-                    onClose={closeAllPopups}
-                />
-                <PopupAdd
-                    isOpen={isAddPlacePopupOpen}
-                    onClose={closeAllPopups}
-                />
+                {isEditAvatarPopupOpen && (
+                    <PopupAvatar onClose={closeAllPopups} />
+                )}
+                {isEditProfilePopupOpen && (
+                    <PopupProfile onClose={closeAllPopups} />
+                )}
+                {isAddPlacePopupOpen && <PopupAdd onClose={closeAllPopups} />}
+                {selectedCard && (
+                    <PopupImage card={selectedCard} onClose={closeAllPopups} />
+                )}
             </div>
         </CurrentUserContext.Provider>
     )
 }
-
 export default App

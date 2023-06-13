@@ -1,7 +1,8 @@
 import CurrentUserContext from '../contexts/CurrentUserContext'
 import React from 'react'
+import Card from './Card'
 
-function Main({ onEditAvatar, onEditProfile, onAddPlace, cards }) {
+function Main({ onEditAvatar, onEditProfile, onAddPlace, cards, onCardClick }) {
     const currentUser = React.useContext(CurrentUserContext)
 
     return (
@@ -42,32 +43,10 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, cards }) {
                 ></button>
             </section>
             <section className="elements">
-            <template id="card">
-              {cards}
-            </template>
-                {/* <template id="card">
-                    <article className="element">
-                        <div className="element__container">
-                            <img className="element__photo" alt="#" />
-                            <button
-                                type="button"
-                                className="element__trash"
-                                aria-label="Удалить фото"
-                            ></button>
-                        </div>
-                        <div className="element__info">
-                            <h2 className="element__text"></h2>
-                            <div className="element__like-area">
-                                <button
-                                    type="button"
-                                    className="element__like"
-                                    aria-label="Лайкнуть фото"
-                                ></button>
-                                <p className="element__like-counter">0</p>
-                            </div>
-                        </div>
-                    </article>
-                </template> */}
+            {cards.map((item) => (
+                <Card key={item._id} card={item} onClick={onCardClick} />
+            ))}
+
             </section>
         </main>
     )

@@ -1,57 +1,19 @@
 import React from 'react'
-import CurrentUserContext from '../contexts/CurrentUserContext'
 
-function Card({ card, onCardClick, onCardLike, onCardDelete }) {
-    const currentUser = React.useContext(CurrentUserContext)
-    const isOwn = card.owner._id === currentUser._id
-    const isLiked = card.likes.some((i) => i._id === currentUser._id)
-    const cardLikeButtonClassName = `elements__like__button ${
-        isLiked && 'elements__like__button_active'
-    }`
-
+function Card({ card, onClick }) {
     function handleClick() {
-        onCardClick(card)
+      onClick(card)
     }
-
-    function handleLikeClick() {
-        onCardLike(card)
-    }
-
-    function handleDeleteCard() {
-        onCardDelete(card)
-    }
-
     return (
-        // <div className="elements__card">
-        //     {isOwn && (
-        //         <button
-        //             className="elements__trash"
-        //             type="button"
-        //             onClick={handleDeleteCard}
-        //         ></button>
-        //     )}
-        //     <img
-        //         className="elements__image"
-        //         src={card.link}
-        //         alt={card.name}
-        //         onClick={handleClick}
-        //     />
-        //     <div className="elements__header">
-        //         <h2 className="elements__title">{card.name}</h2>
-        //         <div className="elements__like">
-        //             <button
-        //                 className={cardLikeButtonClassName}
-        //                 type="button"
-        //                 onClick={handleLikeClick}
-        //             ></button>
-        //             <p className="elements__like__count">{card.likes.length}</p>
-        //         </div>
-        //     </div>
-        // </div>
-        <template id="card">
-            <article className="element">
+        // <template id="card">
+            <article className="element" key={card._id}>
                 <div className="element__container">
-                    <img className="element__photo" alt="#" />
+                    <img
+                        className="element__photo"
+                        alt="#"
+                        onClick={handleClick}
+                        src={card.link}
+                    />
                     <button
                         type="button"
                         className="element__trash"
@@ -59,19 +21,51 @@ function Card({ card, onCardClick, onCardLike, onCardDelete }) {
                     ></button>
                 </div>
                 <div className="element__info">
-                    <h2 className="element__text"></h2>
+                    <h2 className="element__text">{card.name}</h2>
                     <div className="element__like-area">
                         <button
                             type="button"
                             className="element__like"
                             aria-label="Лайкнуть фото"
                         ></button>
-                        <p className="element__like-counter">0</p>
+                        <p className="element__like-counter">
+                            {card.likes.length}
+                        </p>
                     </div>
                 </div>
             </article>
-        </template>
+        // </template>
     )
 }
 
 export default Card
+
+// cards={cards.map((item) => (
+//   <article className="element" key={item._id}>
+//       <div className="element__container">
+//           <img
+//               className="element__photo"
+//               alt="#"
+//               src={item.link}
+//           />
+//           <button
+//               type="button"
+//               className="element__trash"
+//               aria-label="Удалить фото"
+//           />
+//       </div>
+//       <div className="element__info">
+//           <h2 className="element__text">{item.name}</h2>
+//           <div className="element__like-area">
+//               <button
+//                   type="button"
+//                   className="element__like"
+//                   aria-label="Лайкнуть фото"
+//               />
+//               <p className="element__like-counter">
+//                   {item.likes.length}
+//               </p>
+//           </div>
+//       </div>
+//   </article>
+// ))}
