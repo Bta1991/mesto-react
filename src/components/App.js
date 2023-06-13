@@ -5,7 +5,7 @@ import Footer from './Footer'
 import PopupAvatar from './PopupAvatar'
 import PopupProfile from './PopupProfile'
 import PopupAdd from './PopupAdd'
-import PopupImage from './PopupImage'
+import ImagePopup from './ImagePopup'
 import CurrentUserContext from '../contexts/CurrentUserContext'
 import api from '../utils/Api'
 function App() {
@@ -70,7 +70,7 @@ function App() {
                 )}
                 {isAddPlacePopupOpen && <PopupAdd onClose={closeAllPopups} />}
                 {selectedCard && (
-                    <PopupImage card={selectedCard} onClose={closeAllPopups} />
+                    <ImagePopup card={selectedCard} onClose={closeAllPopups} />
                 )}
             </div>
         </CurrentUserContext.Provider>
