@@ -62,13 +62,20 @@ function App() {
                     onCardClick={handleCardClick}
                 />
                 <Footer />
-                {isEditAvatarPopupOpen && (
-                    <PopupAvatar onClose={closeAllPopups} />
-                )}
-                {isEditProfilePopupOpen && (
-                    <PopupProfile onClose={closeAllPopups} />
-                )}
-                {isAddPlacePopupOpen && <PopupAdd onClose={closeAllPopups} />}
+
+                <PopupAvatar
+                    isOpen={isEditAvatarPopupOpen}
+                    onClose={closeAllPopups}
+                />
+                <PopupProfile
+                    isOpen={isEditProfilePopupOpen}
+                    onClose={closeAllPopups}
+                />
+                <PopupAdd
+                    isOpen={isAddPlacePopupOpen}
+                    onClose={closeAllPopups}
+                />
+
                 {selectedCard && (
                     <ImagePopup card={selectedCard} onClose={closeAllPopups} />
                 )}
