@@ -24,11 +24,13 @@ class Api {
     }
 
     setUserInfo(data) {
+      console.log('вызов обновления')
+      console.log(data)
         return fetch(`${this._baseUrl}/users/me`, {
             method: 'PATCH',
             headers: this._headers,
             body: JSON.stringify({
-                name: data.user,
+                name: data.name,
                 about: data.about,
             }),
         }).then(this._checkResponse)
@@ -49,7 +51,7 @@ class Api {
             method: 'POST',
             headers: this._headers,
             body: JSON.stringify({
-                name: card.name,
+                name: card.title,
                 link: card.link,
             }),
         }).then(this._checkResponse)
@@ -74,6 +76,10 @@ class Api {
             method: 'DELETE',
             headers: this._headers,
         }).then(this._checkResponse)
+    }
+
+    changeLikeCardStatus(cardID, isLiked) {
+        return isLiked ? this.deleteLike(cardID) : this.setLike(cardID)
     }
 }
 

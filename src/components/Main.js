@@ -2,7 +2,15 @@ import React, { useContext } from 'react'
 import Card from './Card'
 import CurrentUserContext from '../contexts/CurrentUserContext'
 
-function Main({ onEditAvatar, onEditProfile, onAddPlace, cards, onCardClick }) {
+function Main({
+    onEditAvatar,
+    onEditProfile,
+    onAddPlace,
+    cards,
+    onCardClick,
+    onCardLike,
+    onCardDelete,
+}) {
     const currentUser = useContext(CurrentUserContext)
 
     // Check if `cards` is null or undefined
@@ -12,7 +20,13 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, cards, onCardClick }) {
 
     const renderCards = () => {
         return cards.map((item) => (
-            <Card key={item._id} card={item} onClick={onCardClick} />
+            <Card
+                key={item._id}
+                card={item}
+                onCardClick={onCardClick}
+                onCardLike={onCardLike}
+                onCardDelete={onCardDelete}
+            />
         ))
     }
 

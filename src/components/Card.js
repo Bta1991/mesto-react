@@ -1,31 +1,59 @@
 import React from 'react'
+import CurrentUserContext from '../contexts/CurrentUserContext'
 
-function Card({ card, onClick }) {
+function Card({ card, onCardClick, onCardLike, onCardDelete }) {
+    const currentUser = React.useContext(CurrentUserContext)
+
+    // Определяем, являемся ли мы владельцем текущей карточки
+    const isOwn = card.owner?._id === currentUser._id
+
+    // Определяем, есть ли у карточки лайк, поставленный текущим пользователем
+    const isLiked = card.likes.some((i) => i._id === currentUser._id)
+
+    // Создаём переменную, которую после зададим в `className` для кнопки лайка
+    const cardLikeButtonClassName = `element__like ${
+        isLiked && 'element__like_active'
+    }`
+    // Переменная на случай если картинка будет без имени
+    const altText = card.name || 'Изображение'
+
     function handleClick() {
-        onClick(card)
+        onCardClick(card)
     }
+
+    function handleLikeClick() {
+        onCardLike(card)
+    }
+
+    function handleDeleteClick() {
+        onCardDelete(card)
+    }
+
     return (
-        <article className="element" key={card._id}>
+        <article className="element">
             <div className="element__container">
                 <img
                     className="element__photo"
-                    alt="#"
-                    onClick={handleClick}
                     src={card.link}
+                    alt={altText}
+                    onClick={handleClick}
                 />
-                <button
-                    type="button"
-                    className="element__trash"
-                    aria-label="Удалить фото"
-                ></button>
+                {isOwn && (
+                    <button
+                        className="element__trash"
+                        aria-label="Удалить фото"
+                        onClick={handleDeleteClick}
+                    ></button>
+                )}
             </div>
             <div className="element__info">
-                <h2 className="element__text">{card.name}</h2>
+                <h2 className="element__text">{altText}</h2>
                 <div className="element__like-area">
                     <button
                         type="button"
-                        className="element__like"
+                        className={cardLikeButtonClassName}
                         aria-label="Лайкнуть фото"
+                        onClick={handleLikeClick}
                     ></button>
                     <p className="element__like-counter">{card.likes.length}</p>
                 </div>

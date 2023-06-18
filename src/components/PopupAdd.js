@@ -1,7 +1,22 @@
 import React from 'react'
 import PopupWithForm from './PopupWithForm'
+import { useForm } from '../hooks/useForm'
 
-function PopupAdd({ isOpen, onClose }) {
+function PopupAdd({ isOpen, onClose, onAddPopup }) {
+    const { values, handleChange } = useForm({
+        title: '',
+        link: '',
+    })
+
+    function handleSubmit(e) {
+        e.preventDefault()
+
+        onAddPopup({
+            title: values.title,
+            link: values.link,
+        })
+    }
+
     return (
         <PopupWithForm
             name={'addForm'}
@@ -9,16 +24,18 @@ function PopupAdd({ isOpen, onClose }) {
             buttonText={'Создать'}
             isOpen={isOpen}
             onClose={onClose}
+            onSubmit={handleSubmit}
         >
             <input
-                name="name"
-                id="name"
+                name="title"
+                id="title"
                 minLength="2"
                 maxLength="30"
                 type="text"
                 className="popup__input popup__input_data_title"
                 placeholder="Название места"
                 required
+                onChange={handleChange}
             />
             <span
                 className="popup__error popup__error_visible"
@@ -31,6 +48,7 @@ function PopupAdd({ isOpen, onClose }) {
                 className="popup__input popup__input_data_url"
                 placeholder="Ссылка на картинку"
                 required
+                onChange={handleChange}
             />
             <span
                 className="popup__error popup__error_visible"
