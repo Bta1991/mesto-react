@@ -27,9 +27,10 @@
 [Место](https://bta1991.github.io/mesto-react/)
 
 **Change log**
----
--[ПР10 - Проект "место" перенесен на React](https://code.s3.yandex.net/web-developer/checklists-pdf/new-program/checklist-10.pdf)
--[ПР11 - Добавлена функциональность по брифу](https://code.s3.yandex.net/web-developer/checklists-pdf/new-program/checklist-11.pdf)
+
+-   [ПР10 - Проект "место" перенесен на React](https://code.s3.yandex.net/web-developer/checklists-pdf/new-program/checklist-10.pdf)
+-   [ПР11 - Добавлена функциональность по брифу](https://code.s3.yandex.net/web-developer/checklists-pdf/new-program/checklist-11.pdf)
+
 ---
 
 Сделать:
