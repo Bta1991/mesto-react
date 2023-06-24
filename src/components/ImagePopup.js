@@ -1,6 +1,8 @@
 import React from 'react'
+
 function ImagePopup({ card, onClose }) {
     const popupClass = `popup popup_view ${card ? 'popup_opened' : ''}`
+
     return (
         <div className={popupClass}>
             <div className="popup__photo">

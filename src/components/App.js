@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import Header from './Header'
 import Main from './Main'
 import Footer from './Footer'
 import PopupAvatar from './PopupAvatar'
 import PopupProfile from './PopupProfile'
 import PopupAdd from './PopupAdd'
+import PopupDelete from './PopupDelete'
 import ImagePopup from './ImagePopup'
 import CurrentUserContext from '../contexts/CurrentUserContext'
 import api from '../utils/Api'
@@ -12,28 +13,35 @@ function App() {
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false)
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false)
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false)
+    const [isCardDeletePopupOpen, setIsCardDeletePopupOpen] = useState(false)
     const [currentUser, setCurrentUser] = useState({})
     const [cards, setCards] = useState([])
     const [selectedCard, setSelectedCard] = useState(null)
+    const [cardToDelete, setCardToDelete] = useState(null)
 
-    const handleEditProfileClick = () => {
+    const handleEditProfileClick = useCallback(() => {
         setIsEditProfilePopupOpen(true)
-    }
-    const handleAddPlaceClick = () => {
+    }, [])
+    const handleAddPlaceClick = useCallback(() => {
         setIsAddPlacePopupOpen(true)
-    }
-    const handleEditAvatarClick = () => {
+    }, [])
+    const handleEditAvatarClick = useCallback(() => {
         setIsEditAvatarPopupOpen(true)
-    }
-    const handleCardClick = (card) => {
+    }, [])
+    const handleCardClick = useCallback((card) => {
         setSelectedCard(card)
-    }
-    const closeAllPopups = () => {
+    }, [])
+    const handleDeleteClick = useCallback((card) => {
+        setIsCardDeletePopupOpen(true)
+        setCardToDelete(card)
+    }, [])
+    const closeAllPopups = useCallback(() => {
         setIsEditProfilePopupOpen(false)
         setIsAddPlacePopupOpen(false)
         setIsEditAvatarPopupOpen(false)
+        setIsCardDeletePopupOpen(false)
         setSelectedCard(null)
-    }
+    }, [])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -51,56 +59,69 @@ function App() {
         fetchData()
     }, [])
 
-    function handleCardLike(card) {
-        // Снова проверяем, есть ли уже лайк на этой карточке
-        const isLiked = card.likes.some((i) => i._id === currentUser._id)
+    const handleCardLike = useCallback(
+        (card) => {
+            // Снова проверяем, есть ли уже лайк на этой карточке
+            const isLiked = card.likes.some((i) => i._id === currentUser._id)
 
-        // Отправляем запрос в API и получаем обновлённые данные карточки
-        api.changeLikeCardStatus(card._id, isLiked)
-            .then((newCard) => {
-                setCards((state) =>
-                    state.map((c) => (c._id === card._id ? newCard : c))
-                )
-            })
-            .catch((err) => {
-                console.error(err)
-            })
-    }
-    function handleCardDelete(card) {
-        api.deleteCard(card._id)
+            // Отправляем запрос в API и получаем обновлённые данные карточки
+            api.changeLikeCardStatus(card._id, isLiked)
+                .then((newCard) => {
+                    setCards((state) =>
+                        state.map((c) => (c._id === card._id ? newCard : c))
+                    )
+                })
+                .catch((err) => {
+                    console.error(err)
+                })
+        },
+        [currentUser]
+    )
+
+    const handleCardDelete = useCallback(() => {
+        api.deleteCard(cardToDelete._id)
             .then(() => {
-                const newCards = cards.filter((c) => c._id !== card._id)
-                setCards(newCards)
-            })
-            .catch((err) => console.error(err))
-    }
-    function handleUpdateUser(info) {
-        api.setUserInfo(info)
-            .then((userData) => {
-                setCurrentUser(userData)
+                setCards((cards) =>
+                    cards.filter((item) => item._id !== cardToDelete._id)
+                )
                 closeAllPopups()
             })
             .catch((err) => console.error(err))
-    }
+    }, [cardToDelete])
 
-    function handleUpdateAvatar(link) {
-        api.setAvatar(link)
-            .then((userData) => {
-                setCurrentUser(userData)
-                closeAllPopups()
-            })
-            .catch((err) => console.error(err))
-    }
-
-    function handleAddPlace(card) {
-        api.addCard(card)
-            .then((newCard) => {
-                setCards([newCard, ...cards])
-                closeAllPopups()
-            })
-            .catch((err) => console.error(err))
-    }
-
+    const handleUpdateUser = useCallback(
+        (info) => {
+            api.setUserInfo(info)
+                .then((userData) => {
+                    setCurrentUser(userData)
+                    closeAllPopups()
+                })
+                .catch((err) => console.error(err))
+        },
+        [closeAllPopups]
+    )
+    const handleUpdateAvatar = useCallback(
+        (link) => {
+            api.setAvatar(link)
+                .then((userData) => {
+                    setCurrentUser(userData)
+                    closeAllPopups()
+                })
+                .catch((err) => console.error(err))
+        },
+        [closeAllPopups]
+    )
+    const handleAddPlace = useCallback(
+        (card) => {
+            api.addCard(card)
+                .then((newCard) => {
+                    setCards([newCard, ...cards])
+                    closeAllPopups()
+                })
+                .catch((err) => console.error(err))
+        },
+        [cards, closeAllPopups]
+    )
     return (
         <CurrentUserContext.Provider value={currentUser}>
             <div className="page">
@@ -112,7 +133,8 @@ function App() {
                     cards={cards}
                     onCardClick={handleCardClick}
                     onCardLike={handleCardLike}
-                    onCardDelete={handleCardDelete}
+                    // onCardDelete={handleCardDelete}
+                    onDeleteClick={handleDeleteClick}
                 />
                 <Footer />
 
@@ -130,6 +152,11 @@ function App() {
                     isOpen={isAddPlacePopupOpen}
                     onClose={closeAllPopups}
                     onAddPopup={handleAddPlace}
+                />
+                <PopupDelete
+                    isOpen={isCardDeletePopupOpen}
+                    onClose={closeAllPopups}
+                    onCardDelete={handleCardDelete}
                 />
 
                 <ImagePopup card={selectedCard} onClose={closeAllPopups} />
